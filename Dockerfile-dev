@@ -1,0 +1,15 @@
+FROM node:alpine
+
+# RUN mkdir -p /root/.oci
+
+# COPY ./src/configs/oci /root/.oci
+
+WORKDIR /app
+
+COPY package*.json /app
+RUN yarn install
+COPY . /app
+
+EXPOSE 3000
+
+CMD ["yarn","start:dev"]
