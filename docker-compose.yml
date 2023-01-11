@@ -1,6 +1,22 @@
 version: '3.4'
 
 services:
+  db-local:
+    # container_name: postgres_container
+    image: postgres
+    env_file:
+      - .env.local
+    environment:
+      # POSTGRES_USER: ${POSTGRES_USER}
+      # POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /data/postgres
+    volumes:
+      - db:/data/postgres
+    ports:
+      - '5432:5432'
+    networks:
+      - nestjs-network
+    restart: unless-stopped
   dev:
     working_dir: '/app'
     build:
@@ -15,6 +31,10 @@ services:
       - /app/node_modules
     env_file:
       - .env.local
+    depends_on:
+      - db-local
+    links:
+      - db-local
   prod:
     working_dir: '/app'
     build:
@@ -32,3 +52,7 @@ services:
 
 networks:
   nestjs-network:
+
+volumes:
+  db:
+    driver: local
